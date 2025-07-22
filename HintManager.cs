@@ -10,6 +10,7 @@ using System.Drawing;
 using System.Text;
 using Exiled.API.Features;
 using Exiled.API.Features.Waves;
+using HintServiceMeow.Core.Models.Arguments;
 using PlayerRoles;
 using Respawning;
 using UserSettings.ServerSpecific;
@@ -37,7 +38,7 @@ namespace Timers
 #else
             RespawnTimerDisplay = new()
             {
-                AutoText = arg => GetTimers(arg.Player),
+                AutoText = GetTimers,
                 TargetY = 105,
                 FontSize = 35,
                 SyncSpeed = HintSyncSpeed.Fast
@@ -87,7 +88,7 @@ namespace Timers
             return $"#{color.R:X2}{color.G:X2}{color.B:X2}{alphaInclude}";
         }
 
-        private string GetTimers(ReferenceHub hub)
+        private string GetTimers(AutoContentUpdateArg ev)
         {
             if (!Round.IsStarted) return string.Empty;
             TimeSpan ntfTime = NtfRespawnTime() + TimeSpan.FromSeconds(18);
@@ -95,8 +96,8 @@ namespace Timers
             TimeSpan chaosTime = ChaosRespawnTime() + TimeSpan.FromSeconds(13);
             if (chaosTime < TimeSpan.Zero) chaosTime = TimeSpan.Zero;
 
-            if (hub?.gameObject == null) return "";
-            SSTwoButtonsSetting setting = ServerSpecificSettingsSync.GetSettingOfUser<SSTwoButtonsSetting>(hub, Config.ServerSpecificSettingId);
+            if (ev.PlayerDisplay?.ReferenceHub?.gameObject == null) return "";
+            SSTwoButtonsSetting setting = ServerSpecificSettingsSync.GetSettingOfUser<SSTwoButtonsSetting>(ev.PlayerDisplay.ReferenceHub, Config.ServerSpecificSettingId);
 
             if (setting.SyncIsB) return "";
 
