@@ -1,9 +1,11 @@
 #if HSM
+using Exiled.API.Features;
 using HintServiceMeow.Core.Utilities;
 using PlayerRoles;
 #endif
 using Exiled.API.Features.Waves;
 using Exiled.Events.EventArgs.Player;
+using Exiled.Permissions.Extensions;
 using Respawning.Waves;
 using UserSettings.ServerSpecific;
 using Log = Exiled.API.Features.Log;
@@ -65,6 +67,14 @@ namespace Timers
 
             if (willSendHint == currentlySendingHint) return;
             PlayerDisplay display = PlayerDisplay.Get(ev.Player);
+            if (ev.Player.CheckPermission("donador.tuto") && Round.IsStarted)
+            {
+                if (ev.NewRole == RoleTypeId.Tutorial && display.GetHint(HintManager.Instance.RespawnTimerDisplay.Guid) == null && ev.Player.ReferenceHub != null && ev.Player.ReferenceHub.gameObject != null)
+                    display.AddHint(HintManager.Instance.TutorialRespawnTimerDisplay);
+                else
+                    display.RemoveHint(HintManager.Instance.TutorialRespawnTimerDisplay);
+                return;
+            }
             if (display == null) return;
             if (willSendHint && display.GetHint(HintManager.Instance.RespawnTimerDisplay.Guid) == null && ev.Player.ReferenceHub != null && ev.Player.ReferenceHub.gameObject != null)
                 display.AddHint(HintManager.Instance.RespawnTimerDisplay);

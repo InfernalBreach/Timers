@@ -43,6 +43,13 @@ namespace Timers
                 FontSize = 35,
                 SyncSpeed = HintSyncSpeed.Fast
             };
+            TutorialRespawnTimerDisplay = new()
+            {
+                AutoText = GetTimers,
+                TargetY = 40,
+                FontSize = 40,
+                SyncSpeed = HintSyncSpeed.Fast
+            };
 #endif
         }
 
@@ -55,6 +62,7 @@ namespace Timers
         internal AutoElement RespawnTimerDisplay { private set; get; }
 #else
         internal DynamicHint RespawnTimerDisplay { private set; get; }
+        internal DynamicHint TutorialRespawnTimerDisplay { private set; get; }
 #endif
 
         private TimeSpan NtfRespawnTime()
@@ -100,6 +108,16 @@ namespace Timers
             SSTwoButtonsSetting setting = ServerSpecificSettingsSync.GetSettingOfUser<SSTwoButtonsSetting>(ev.PlayerDisplay.ReferenceHub, Config.ServerSpecificSettingId);
 
             if (setting.SyncIsB) return "";
+            if (ev.PlayerDisplay.ReferenceHub.GetRoleId() == RoleTypeId.Tutorial)
+            {
+                StringBuilder tutorialbuilder = new StringBuilder().Append("<align=center>");
+                tutorialbuilder.Append($"<color={ConvertToHex(Config.NtfSpawnColor)}>").Append(TimerText(ntfTime)).Append("</color>");
+                tutorialbuilder.Append($"<space={Config.SpaceBetweenTimers}ems>");
+                tutorialbuilder.Append($"<color={ConvertToHex(Config.ChaosSpawnColor)}>").Append(TimerText(chaosTime)).Append("</color>");
+                tutorialbuilder.Append("</align>");
+                return tutorialbuilder.ToString();
+            }
+
 
             StringBuilder builder = new StringBuilder()
                 .Append("<align=center>");
