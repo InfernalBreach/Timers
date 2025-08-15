@@ -40,7 +40,7 @@ namespace Timers
             Exiled.Events.Handlers.Player.Left += _events.OnLeft;
 #endif
 
-            HeaderSetting header = new(Translation.ServerSpecificSettingHeading);
+            HeaderSetting header = new(Config.ServerSpecificSettingId,Translation.ServerSpecificSettingHeading);
             IEnumerable<SettingBase> settings = new SettingBase[]
             {
                 header,
